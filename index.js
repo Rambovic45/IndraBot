@@ -21,3 +21,14 @@ fs.readdir("./Commandes/", (error, f) => {
     client.commands.set(commande.help.name, commandes);
     });
 });
+
+fs.readdir("./Events", (error, f) => {
+    if (error) console.log(error);
+    console.log(`${f.length} events en chargement !`);
+    f.forEach((f) => {
+        const events = require(`./Events/${f}`);
+        const event = f.split(".")[0];
+
+    client.on(event, events.bind(null, client));
+    });
+});

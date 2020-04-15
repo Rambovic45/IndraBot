@@ -1,0 +1,22 @@
+{
+  "name": "indrabot",
+  "version": "0.1.0",
+  "description": "Le meilleur bot de Rambovic45#2214",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rambovic45/IndraBot.git"
+  },
+  "author": "Rambovic45#2214",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rambovic45/IndraBot/issues"
+  },
+  "homepage": "https://github.com/Rambovic45/IndraBot#readme",
+  "dependencies": {
+    "discord.js": "^12.1.1"
+  }
+}

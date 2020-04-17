@@ -1,34 +1,44 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const fs = require("fs");
-const token = require("./token.json");
+const { Token } = require("./token.json");
+const { prefix } = require("./config.json");
 
-client.login(token.Token);
-
+client.login(Token);
 client.commands = new Discord.Collection();
 
-fs.readdir("./Commandes/", (error, f) => {
-    if (error) console.log(error);
+const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 
-    let commandes = f.filter(f => f.split(".").pop() === "js");
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    client.commands.set(command.name, command);
+};
 
-    if (commandes.length <= 0) return console.log("Aucune commandes trouver !");
 
-    commmandes.forEach((f) => {
-        let commande = require(`./Commandes/${f}`);
-        console.log(`${f} commandes chargée !`);
+client.on("ready", () => {
+    console.log("Bot On")
+})
 
-    client.commands.set(commande.help.name, commandes);
-    });
-});
+ client.on("message", msg => {
+     if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+        const args = msg.content.slice(prefix.length).split(/ +/);
+	    const commandName = args.shift().toLowerCase();
+        if (!client.commands.has(commandName)) return;
 
-fs.readdir("./Events", (error, f) => {
-    if (error) console.log(error);
-    console.log(`${f.length} events en chargement !`);
-    f.forEach((f) => {
-        const events = require(`./Events/${f}`);
-        const event = f.split(".")[0];
+        const command = client.commands.get(commandName);
 
-    client.on(event, events.bind(null, client));
-    });
-});
+        if (command.guildOnly && msg.channel.type !== "text") {
+            return msg.reply("Sa ne marche pas dans les message priver !")
+        }
+
+        if (command.args && !args.length) {
+            return msg.channel.send(`Manque des args a ta commande, ${msg.author} !`)
+        }
+
+        try {
+	        command.execute(message, args);
+        } catch (error) {
+	        console.error(error);
+	        msg.reply("Bug");
+    };
+ });
